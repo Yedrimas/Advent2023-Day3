@@ -7,6 +7,12 @@ case object main {
 
         // Part 1
         println(Utils.sumPartNumber(parts, puzzle))
+
+
+        val gears = Utils.getGearsFromTable(puzzle)
+
+        // Part 2
+        println(Utils.sumValidGears(parts, gears, puzzle))
     }
 
 }

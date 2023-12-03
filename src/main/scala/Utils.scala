@@ -1,4 +1,3 @@
-import java.awt.Point
 import scala.io.Source
 
 case object Utils {
@@ -54,11 +53,41 @@ case object Utils {
           }
     }
 
+    def getGears(line: String): Iterable[NumberPosition] = {
+        line
+          .zipWithIndex
+          .filter(_._1 == '*')
+          .map {
+              g =>
+                  NumberPosition(
+                      value = 1, positionY = -1, positionX = g._2
+                  )
+          }
+    }
+
+    def getGearsFromTable(inputTable: Seq[String]): Iterable[NumberPosition] = {
+        inputTable
+          .zipWithIndex
+          .flatMap {
+              case (s: String, index: Int) =>
+                  getGears(s).map(_.copy(positionY = index))
+          }
+    }
+
     def sumPartNumber(parts: Iterable[NumberPosition], input: Seq[String]) : Int = {
         parts
           .filter(_.isPartNumber(input))
           .map(_.value)
           .sum
     }
+
+    def sumValidGears(parts: Iterable[NumberPosition], gears: Iterable[NumberPosition], input: Seq[String]): Int = {
+        gears
+          .filter(_.isAValidGear(parts, input))
+          .map(_.getCloseParts(parts, input))
+          .map(l => l.map(_.value).product)
+          .sum
+    }
+
 
 }

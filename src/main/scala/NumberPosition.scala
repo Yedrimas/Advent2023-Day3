@@ -8,6 +8,11 @@ case class NumberPosition(
 
     val lenght: Int = value.toString.length
 
+    val valuePoints: Seq[Point] = {
+        val startX = positionX
+        val endX = positionX + lenght - 1
+        (startX to endX).map(x => new Point(x, positionY))
+    }
     def getAroundPoints(table: Seq[String]): Seq[Point] = {
         val maxX = table.head.length
         val maxY = table.length
@@ -42,5 +47,18 @@ case class NumberPosition(
             val c = table(point.y)(point.x)
             !c.isDigit && c != '.'
         }
+    }
+
+    def getCloseParts(parts: Iterable[NumberPosition], inputTable: Seq[String]): Seq[NumberPosition] = {
+        val thisPoints = getAroundPoints(inputTable).toList
+        parts.filter { part =>
+              val partPoints = part.valuePoints
+              thisPoints.intersect(partPoints).nonEmpty
+          }
+          .toList
+    }
+
+    def isAValidGear(parts: Iterable[NumberPosition], inputTable: Seq[String]): Boolean = {
+        getCloseParts(parts, inputTable).length == 2
     }
 }
